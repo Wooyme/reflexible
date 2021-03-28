@@ -5,8 +5,7 @@ from __future__ import print_function
 import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
-from mpl_toolkits import basemap
-
+from reflexible.wrapping import addcyclic
 # local imports
 import reflexible.mapping as mp
 from reflexible import Structure, CacheDict
@@ -344,7 +343,7 @@ def plot_sensitivity(H, data, data_range=None,
 
         if m.projection != 'merc':
             if lons[-1] - lons[0] < 360.:
-                topodat, lons = basemap.addcyclic(data.values, lons)
+                topodat, lons = addcyclic(data.values, lons)
 
     # get min/max range
     if data_range is not None:

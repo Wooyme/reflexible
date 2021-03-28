@@ -28,6 +28,8 @@ from reflexible import Structure
 __author__ = "John F Burkhart <jfburkhart@gmail.com>"
 __version__ = "0.03"
 
+from reflexible.wrapping import MyBaseMap
+
 
 def map_regions(map_region='default', map_par=None, fig_par=None):
     """Given a `map_region`, return the associated parameters in mapping DB.
@@ -247,7 +249,8 @@ def get_base_image(map_region='default', map_par=None, fig_par=None,
 
     plt.axes(ax)  # make the original axes current again
 
-    m = basemap.Basemap(**map_par)
+    #m = basemap.Basemap(**map_par)
+    m = MyBaseMap(**map_par)
 
     if image is None:
         # draw coastlines and political boundaries.
@@ -260,42 +263,8 @@ def get_base_image(map_region='default', map_par=None, fig_par=None,
         # use draw_grid function
         draw_grid(m)
     else:
-        # shows how to warp an image from one map projection to another.
-        # image from http://visibleearth.nasa.gov/
 
-        # need to change back to [0.1,0.1,0.7,0.7]
-        #ax = fig.add_axes([0.1, 0.1, 0.7, 0.7])
-
-        # read in jpeg image to rgba array of normalized floats.
-        pilImage = Image.open(image)
-        rgba = mpl.image.pil_to_array(pilImage)
-        rgba = rgba.astype(np.float32) / 255.  # convert to normalized floats.
-
-        # define lat/lon grid that image spans (projection='cyl').
-        nlons = rgba.shape[1]
-        #nlats = rgba.shape[0]
-        delta = 360. / float(nlons)
-        lons = np.arange(-180. + 0.5 * delta, 180., delta)
-        lats = np.arange(-90. + 0.5 * delta, 90., delta)
-
-        # transform to nx x ny regularly spaced native projection grid
-        # nx and ny chosen to have roughly the same horizontal res as original
-        # image.
-        dx = 2. * np.pi * m.rmajor / float(nlons)
-        nx = int((m.xmax - m.xmin) / dx) + 1
-        ny = int((m.ymax - m.ymin) / dx) + 1
-        rgba_warped = np.zeros((ny, nx, 4), np.float64)
-        # interpolate rgba values from proj='cyl' (geographic coords) to 'lcc'
-        try:
-            for k in range(4):
-                rgba_warped[:, :, k] = m.transform_scalar(
-                    rgba[:, :, k], lons, lats, nx, ny)
-        except:
-            rgba_warped = rgba
-            print('problem with transform_scalar')
-        # plot warped rgba image.
-        m.imshow(rgba_warped)
-
+        m.imshow(image)
         # draw coastlines.
         m.drawcoastlines(linewidth=0.5, color='0.5')
         if drawlsmask:
@@ -310,4 +279,6 @@ def get_base_image(map_region='default', map_par=None, fig_par=None,
 
 if __name__ == '__main__':
     # Some tests for reading the mapping YAML database
-    map_regions(map_region=sys.argv[1])
+    # map_regions(map_region='northern_hemisphere')
+    get_base_image(map_region="world",drawlsmask=True)
+    plt.show()

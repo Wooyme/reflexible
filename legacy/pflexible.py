@@ -72,11 +72,7 @@ from matplotlib.dates import date2num
 import matplotlib.image as image
 from matplotlib.patches import Ellipse
 # Basemap
-try:
-    from mpl_toolkits.basemap import shiftgrid, addcyclic
-except ImportError:
-    from matplotlib.toolkits.basemap import shiftgrid, addcyclic
-
+from reflexible.wrapping import shiftgrid,addcyclic
 
 # local imports
 import mapping as mp

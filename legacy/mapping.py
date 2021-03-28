@@ -14,9 +14,10 @@ import matplotlib as mpl
 import matplotlib.image
 import matplotlib.pyplot as plt
 from mpl_toolkits import basemap
+from reflexible.wrapping import shiftgrid,MyBaseMap
 
 # This is just to make this legacy think that it can access those functions
-from reflexible.mapping import map_regions, draw_grid, get_FIGURE, get_base1
+from reflexible.mapping import map_regions, draw_grid #, get_FIGURE, get_base1
 
 # TODO: !!NEED TO FIX!!
 TEX = False
@@ -150,7 +151,7 @@ def plot_ECMWF(nc, variable, time, level, map_region='north_america'):
     data = alldata[time, level, :, :]
     data = data[::-1, :]  # flip lats
     # shift the grid to go from -180 to 180
-    d2, lon2 = basemap.shiftgrid(-180, data, lon1)
+    d2, lon2 = shiftgrid(-180, data, lon1)
     plot_grid((lon2, lat2, d2), map_region=map_region)
 
 
@@ -1507,3 +1508,6 @@ def vinc_pt(f, a, phi1, lembda1, alpha12, s):
     # lons,lats = gc.points(10)
     # for lon,lat in zip(lons,lats):
     #     print(lon,lat)
+
+if __name__ == '__main__':
+    get_base2()
